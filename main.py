@@ -2,6 +2,7 @@ from matplotlib import pyplot as plt  # do tworzenia wykresów
 from random import randint  # do tworzenia i sortowania danych
 from math import atan2  # for computing polar angle
 
+
 # Tworzy wykres punktowy, dane wejściowe to lista współrzędnych (x,y).
 # Drugie dane wejściowe 'otoczka_wypukla' to kolejna lista współrzędnych (x,y) składająca się z punktów w 'koordynaty' zewnętrzne, jeśli nie jest pusta, elementy tej listy zostaną użyte do narysowania granicy zewnętrznej.
 def wykres_punktowy(koordynaty, otoczka_wypukla=None):
@@ -18,6 +19,7 @@ def wykres_punktowy(koordynaty, otoczka_wypukla=None):
             plt.plot((c0[0], c1[0]), (c0[1], c1[1]), 'r')
     plt.show()
 
+
 # Zwraca kąt biegunowy (radiany) od p0 do p1.
 # Jeśli p1 jest puste, domyślnie zastępuje je globalną zmienną 'min_kat_bieg', ustawioną w funkcji 'alg_grahama'.
 def kat_biegunowy(p0, p1=None):
@@ -27,14 +29,16 @@ def kat_biegunowy(p0, p1=None):
     x_zakres = p0[0] - p1[0]
     return atan2(y_zakres, x_zakres)
 
+
 # Zwraca odległość euklidesową od p0 do p1, pierwiastek kwadratowy nie jest stosowany ze względu na szybkość.
 # Jeśli p1 jest puste, domyślnie zastępuje je globalną zmienną 'min_kat_bieg', ustawioną w funkcji 'alg_grahama'.
 def odleglosc(p0, p1=None):
-    if p1 == None:
+    if p1 is None:
         p1 = min_kat_bieg
     y_zakres = p0[1] - p1[1]
     x_zakres = p0[0] - p1[0]
     return y_zakres ** 2 + x_zakres ** 2
+
 
 # Zwraca wyznacznik macierzy 3x3
 # 	[p1(x) p1(y) 1]
@@ -46,11 +50,13 @@ def odleglosc(p0, p1=None):
 def sprawdz_wyznacznik(p1, p2, p3):
     return (p2[0] - p1[0]) * (p3[1] - p1[1]) - (p2[1] - p1[1]) * (p3[0] - p1[0])
 
+
 # Sortuje w porządku rosnącym kąta biegunowego od punktu „min_kat_bieg”.
 # Zakłada się, że zmienna 'kotwica' jest globalna, ustawiana wewnątrz 'alg_grahama'.
 # W przypadku dowolnych wartości o równych kątach biegunowych stosuje się drugie sortowanie, aby zapewnić rosnącą odległość od punktu „min_kat_bieg”.
 def szybkie_sortowanie(a):
-    if len(a) <= 1: return a
+    if len(a) <= 1:
+        return a
     mniejsza, rowna, wieksza = [], [], []
     piv_ang = kat_biegunowy(a[randint(0, len(a) - 1)])  # wybierz losowy punkt
     for pt in a:
@@ -63,6 +69,7 @@ def szybkie_sortowanie(a):
             wieksza.append(pt)
     return szybkie_sortowanie(mniejsza) + sorted(rowna, key=odleglosc) + szybkie_sortowanie(wieksza)
 
+
 # Zwraca wierzchołki stanowiące granice otoczki wypukłej zawierające wszystkie punkty w zbiorze wejściowym.
 # Wejście 'punkty' jest listą współrzędnych (x,y).
 # Jeśli 'pokaz_postep' jest ustawione na True, postęp w konstruowaniu otoczki będzie wykreślany w każdej iteracji.
@@ -72,7 +79,7 @@ def alg_grahama(punkty, pokaz_postep):
     # Znajdź punkt (x,y) o najniższej wartości y wraz z jego indeksem na liście 'punkty'. Jeśli jest wiele punktów o tej samej wartości y, wybierz ten z najmniejszym x.
     min_wartosc = None
     for i, (x, y) in enumerate(punkty):
-        if min_wartosc == None or y < punkty[min_wartosc][1]:
+        if min_wartosc is None or y < punkty[min_wartosc][1]:
             min_wartosc = i
         if y == punkty[min_wartosc][1] and x < punkty[min_wartosc][0]:
             min_wartosc = i
@@ -92,14 +99,15 @@ def alg_grahama(punkty, pokaz_postep):
         while sprawdz_wyznacznik(otoczka[-2], otoczka[-1], s) <= 0:
             del otoczka[-1]
             if len(otoczka) < 2:
-                del otoczka[-1]
                 break
         otoczka.append(s)
     return otoczka
 
+
 # Zwraca listę koordynatów (x,y) tworzonych losowo z zakresu wpisanego min i max
 def stworz_pkty(ilosc=4, min=-50, max=50):
     return [[randint(min, max), randint(min, max)] for _ in range(ilosc)]
+
 
 # Sprawdzanie czy wpisana wartość jest liczbą
 def sprawdz_wartosc(i, o):
@@ -113,10 +121,10 @@ def sprawdz_wartosc(i, o):
             except ValueError:
                 print("Wpisana wartość nie jest liczbą! Spróbuj ponownie..")
 
+
 # Odpytuje użytkownika o wybrane bądź losowe współrzędne
 def wspolrzedne():
     global pkt
-    pkt = []
     odpowiedz = input("Chcesz wpisać własne współrzędne? (Wpisz tak/nie) ")
     if odpowiedz == ("tak") or odpowiedz == ("Tak"):
         for i in range(1, 5):
@@ -131,6 +139,8 @@ def wspolrzedne():
         print("Nie zrozumiałem")
         wspolrzedne()
 
+
+pkt = []
 wspolrzedne()
 print("Współrzędne:", pkt)
 wykres_punktowy(pkt)
