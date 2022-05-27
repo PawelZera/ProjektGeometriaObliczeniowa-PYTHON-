@@ -98,9 +98,12 @@ def alg_grahama(punkty, pokaz_postep):
             wykres_punktowy(punkty, otoczka)
         while sprawdz_wyznacznik(otoczka[-2], otoczka[-1], s) <= 0:
             del otoczka[-1]
-            if len(otoczka) < 2:
+            if len(otoczka) <= 2:
                 break
         otoczka.append(s)
+    if len(otoczka) == 2:
+        if otoczka[0][0] == otoczka[1][0] and otoczka[0][1] == otoczka[1][1]:
+            otoczka.pop()
     return otoczka
 
 
@@ -147,3 +150,14 @@ wykres_punktowy(pkt)
 otoczka = alg_grahama(pkt, True)
 wykres_punktowy(pkt, otoczka)
 print("Współrzędne otoczki wypukłej:", otoczka)
+prefix = "Otoczka wypukła jest "
+if len(otoczka) == 1:
+    print(prefix+"punktem")
+if len(otoczka) == 2:
+    print(prefix+"odcinkiem")
+if len(otoczka) == 3:
+    print(prefix+"trójkątem")
+if len(otoczka) == 4:
+    print(prefix+"czworokątem")
+print("Koniec programu")
+quit()
